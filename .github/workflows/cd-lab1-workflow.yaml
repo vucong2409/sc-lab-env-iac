@@ -1,0 +1,16 @@
+name: tf-cd-lab1
+on: [workflow_dispatch]
+jobs:
+  plan-and-apply:
+    runs-on: ubuntu-latest
+    steps:
+      # Get the code
+      - uses: actions/checkout@v4
+      # Setup terraform CLI
+      - uses: hashicorp/setup-terraform@v2.0.3          
+      # Init terraform
+      - run: terraform -chdir=lab1 init -reconfigure
+      # Run plan
+      - run: terraform -chdir=lab1 plan
+      # Run apply
+      - run: terraform -chdir=lab1 apply -auto-approve
