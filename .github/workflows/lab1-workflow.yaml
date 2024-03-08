@@ -1,8 +1,11 @@
 name: check-tf-lint
 on:
   pull_request:
-    branches:
-    - main
+    types:
+      - opened
+      - edited
+      - labeled
+      - unlabeled
 jobs:
   check-tf-lint:
     runs-on: ubuntu-latest
