@@ -3,12 +3,7 @@ terraform {
   // See: https://github.com/hashicorp/terraform/issues/13022
   backend "s3" {
     bucket = "sc-lab-state-bucket"
-    key    = "tf-state/lab-01/dev/state"
+    key    = "tf-state/lab-03/dev/state"
     region = "ap-southeast-1"
   }
-}
-
-module "basic-network" {
-  source   = "../modules/basic-network"
-  vpc_cidr = var.vpc_cidr
 }
