@@ -1,7 +1,7 @@
-name: check-tf-lint
+name: tf-ci-lint-lab1
 on: [push]
 jobs:
-  check-tf-lint:
+  check-tf-fmt:
     runs-on: ubuntu-latest
     steps:
       # Get the code
