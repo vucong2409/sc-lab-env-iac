@@ -12,8 +12,11 @@ jobs:
       # Setup terraform CLI
       - uses: hashicorp/setup-terraform@v2.0.3          
       # Init terraform
-      - run: terraform -chdir=lab1 init -reconfigure
+      - run: terraform init -reconfigure
+        working-directory: lab1
       # Run plan
-      - run: terraform -chdir=lab1 plan
+      - run: terraform plan
+        working-directory: lab1
       # Run apply
-      - run: terraform -chdir=lab1 apply -auto-approve
+      - run: terraform apply -auto-approve
+        working-directory: lab1

@@ -10,10 +10,13 @@ jobs:
       # Get the code
       - uses: actions/checkout@v4
       # Setup terraform CLI
-      - uses: hashicorp/setup-terraform@v2.0.3          
+      - uses: hashicorp/setup-terraform@v2.0.3
       # Init terraform
-      - run: terraform -chdir=lab1 init -reconfigure
+      - run: terraform init -reconfigure
+        working-directory: lab1
       # Run plan
-      - run: terraform -chdir=lab1 plan
+      - run: terraform plan
+        working-directory: lab1
       # Run destroy
-      - run: terraform -chdir=lab1 destroy -auto-approve
+      - run: terraform destroy -auto-approve
+        working-directory: lab1
