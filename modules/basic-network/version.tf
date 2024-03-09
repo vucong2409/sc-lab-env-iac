@@ -10,5 +10,5 @@ terraform {
 
 # Set the region to avoid error/misplace resource.
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.vpc_region
 }

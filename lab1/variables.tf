@@ -10,6 +10,10 @@ variable "private_subnet_cidr" {
   type = string
 }
 
+variable "vpc_region" {
+  type = string
+}
+
 variable "subnet_az" {
   type = string
 }
