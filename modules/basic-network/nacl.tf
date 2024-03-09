@@ -8,21 +8,21 @@ resource "aws_network_acl" "nacl_allow_all" {
 
 
   ingress {
-    protocol = "all"
-    rule_no = 32766
-    action = "allow"
+    protocol   = "all"
+    rule_no    = 32766
+    action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port = 0
-    to_port = 0
+    from_port  = 0
+    to_port    = 0
   }
 
   egress {
-    protocol = "all"
-    rule_no = 32766
-    action = "allow"
+    protocol   = "all"
+    rule_no    = 32766
+    action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port = 0
-    to_port = 0
+    from_port  = 0
+    to_port    = 0
   }
 
   tags = var.general_tags
@@ -33,39 +33,39 @@ resource "aws_network_acl" "nacl_allow_local_only" {
   vpc_id = aws_vpc.main_vpc.id
 
   ingress {
-    protocol = "all"
-    rule_no = 32766
-    action = "deny"
+    protocol   = "all"
+    rule_no    = 32766
+    action     = "deny"
     cidr_block = "0.0.0.0/0"
-    from_port = 0
-    to_port = 0
+    from_port  = 0
+    to_port    = 0
   }
 
   egress {
-    protocol = "all"
-    rule_no = 32766
-    action = "deny"
+    protocol   = "all"
+    rule_no    = 32766
+    action     = "deny"
     cidr_block = "0.0.0.0/0"
-    from_port = 0
-    to_port = 0
+    from_port  = 0
+    to_port    = 0
   }
 
   ingress {
-    protocol = "all"
-    rule_no = 100
-    action = "allow"
+    protocol   = "all"
+    rule_no    = 100
+    action     = "allow"
     cidr_block = aws_vpc.main_vpc.cidr_block
-    from_port = 0
-    to_port = 0
+    from_port  = 0
+    to_port    = 0
   }
 
   egress {
-    protocol = "all"
-    rule_no = 100
-    action = "allow"
+    protocol   = "all"
+    rule_no    = 100
+    action     = "allow"
     cidr_block = aws_vpc.main_vpc.cidr_block
-    from_port = 0
-    to_port = 0
+    from_port  = 0
+    to_port    = 0
   }
 
   tags = var.general_tags
