@@ -9,6 +9,10 @@ terraform {
 }
 
 module "basic-network" {
-  source   = "../modules/basic-network"
-  vpc_cidr = var.vpc_cidr
+  source              = "../modules/basic-network"
+  vpc_cidr            = var.vpc_cidr
+  public_subnet_cidr  = var.public_subnet_cidr
+  private_subnet_cidr = var.private_subnet_cidr
+  subnet_az           = var.subnet_az
+  general_tags        = var.general_tags
 }
