@@ -8,7 +8,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 sysctl -p
 
 # Install required package
-yum install -y iptables-services squid
+yum install -y iptables-services
 
 # Enable iptables
 systemctl start iptables
