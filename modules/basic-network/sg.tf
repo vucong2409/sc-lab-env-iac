@@ -21,6 +21,13 @@ resource "aws_security_group" "sg_for_normal_instance" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "all"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = var.general_tags
 }
 
@@ -39,6 +46,13 @@ resource "aws_security_group" "sg_for_web_server" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "all"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

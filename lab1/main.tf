@@ -22,3 +22,16 @@ module "basic_network" {
   subnet_az           = var.subnet_az
   general_tags        = var.general_tags
 }
+
+resource "aws_instance" "app" {
+  instance_type     = "t2.micro"
+  ami               = "ami-09b1e8fc6368b8a3a"
+  subnet_id         = module.basic_network.private_subnet_id
+  key_name          = aws_key_pair.main_ec2_keypair.key_name
+  source_dest_check = true
+  root_block_device {
+    delete_on_termination = true
+    volume_size           = 10
+  }
+  security_groups = [aws_security_group.sg_for_proxy.id]
+}

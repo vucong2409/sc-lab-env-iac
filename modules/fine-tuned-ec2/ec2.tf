@@ -1,5 +1,5 @@
 resource "aws_instance" "application_ec2" {
-  instance_type = "t3.micro"
+  instance_type = "t2.micro"
   ami           = data.aws_ami.rhel9.id
   subnet_id     = var.subnet_id
   // Allow EC2 to get its own metadata
