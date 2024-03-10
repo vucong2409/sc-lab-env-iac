@@ -7,22 +7,22 @@ data "aws_ami" "rhel9" {
   owners = ["309956199498"]
 
   filter {
-    name = "name"
+    name   = "name"
     values = ["RHEL-9*"]
   }
 
   filter {
-    name = "platform"
+    name   = "platform"
     values = ["rhel"]
   }
 
   filter {
-    name = "virtualization-type"
+    name   = "virtualization-type"
     values = ["hvm"]
   }
 
   filter {
-    name = "root-device-type"
+    name   = "root-device-type"
     values = ["ebs"]
   }
 }
