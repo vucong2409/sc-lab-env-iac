@@ -8,7 +8,12 @@ terraform {
   }
 }
 
-module "basic-network" {
+resource "aws_key_pair" "main_ec2_keypair" {
+  key_name   = "ec2-sc-lab-keypair"
+  public_key = var.owner_public_key
+}
+
+module "basic_network" {
   source              = "../modules/basic-network"
   vpc_region          = var.vpc_region
   vpc_cidr            = var.vpc_cidr

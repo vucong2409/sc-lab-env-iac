@@ -18,6 +18,10 @@ variable "subnet_az" {
   type = string
 }
 
+variable "owner_public_key" {
+  type = string
+}
+
 variable "general_tags" {
   type = map(string)
 }
