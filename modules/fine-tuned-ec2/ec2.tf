@@ -4,12 +4,12 @@ resource "aws_instance" "application_ec2" {
   subnet_id     = var.subnet_id
   // Allow EC2 to get its own metadata
   metadata_options {
-    http_endpoint = enabled
-    http_tokens   = optional
+    http_endpoint = "enabled"
+    http_tokens   = "optional"
   }
   root_block_device {
     delete_on_termination = true
-    volume_size           = "10GiB"
+    volume_size           = 10
   }
   private_dns_name_options {
     hostname_type = "ip-name"
