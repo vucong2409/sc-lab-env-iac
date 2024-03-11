@@ -93,5 +93,7 @@ resource "aws_instance" "nat" {
     device_index         = 1
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = "NAT Instance"
+  }, var.general_tags)
 }

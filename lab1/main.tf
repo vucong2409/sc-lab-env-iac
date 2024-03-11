@@ -34,4 +34,8 @@ resource "aws_instance" "app" {
     volume_size           = 10
   }
   security_groups = [aws_security_group.sg_for_proxy.id]
+
+  tags = merge({
+    "Name" = "App Instance"
+  }, var.general_tags)
 }

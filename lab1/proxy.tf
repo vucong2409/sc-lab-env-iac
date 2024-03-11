@@ -52,5 +52,7 @@ resource "aws_instance" "proxy" {
     device_index         = 0
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = "Proxy Instance"
+  }, var.general_tags)
 }
