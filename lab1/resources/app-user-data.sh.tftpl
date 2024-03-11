@@ -1,0 +1,63 @@
+#!/bin/bash
+# This script should be run as root
+set -e
+
+# Setup source code directory
+mkdir /opt/weather-report
+cat > /opt/weather-report/get-weather-report.py <<EOF
+#!/usr/bin/python
+import requests
+import time
+
+# Get temperature of Hanoi via a proxy
+def get_current_han_temp_via_proxy(endpoint, proxy):
+    res = requests.get(WTTR_HAN_ENDPOINT, proxies=proxies)
+    if res.ok:
+        print("Hanoi current temperature is ", res.text)
+    else:
+        print("Some error happened, please try again")
+
+# Squid proxy endpoint
+SQUID_PROXY_ADDR = "${ squid_proxy_addr }"
+# Hanoi weather report endpoint
+WTTR_HAN_ENDPOINT = "https://wttr.in/hanoi?format=%t"
+# Wait 300 seconds (5 min) between queries
+QUERY_DELAY_TIME = 300
+
+# Use same proxy for every scheme
+proxies = {
+    "http": SQUID_PROXY_ADDR,
+    "https": SQUID_PROXY_ADDR
+}
+
+while True:
+    get_current_han_temp_via_proxy(WTTR_HAN_ENDPOINT, SQUID_PROXY_ADDR)
+    time.sleep(QUERY_DELAY_TIME)
+EOF
+# Give run permission for the python script
+chmod +x /opt/weather-report/get-weather-report.py
+
+# Create systemd service file
+cat > /etc/systemd/system/weather-report.service <<EOF
+[Unit]
+Description=Report weather in Hanoi
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+User=root
+ExecStart=/usr/bin/python3 /opt/weather-report/get-weather-report.py
+# Delay 20s to ensure proxy started properly
+ExecStartPre=/bin/sleep 20
+# Fix Stdout to log
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and run the service
+systemctl daemon-reload
+systemctl enable weather-report
+systemctl start weather-report

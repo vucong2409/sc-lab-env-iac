@@ -1,0 +1,14 @@
+[Unit]
+Description=Report weather in Hanoi
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+User=root
+ExecStart=/usr/bin/python3 /opt/weather-report/get-weather-report.py
+# Fix Stdout to log
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

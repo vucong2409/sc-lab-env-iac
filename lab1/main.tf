@@ -24,10 +24,16 @@ module "basic_network" {
 }
 
 resource "aws_instance" "app" {
-  instance_type     = "t2.micro"
-  ami               = "ami-09b1e8fc6368b8a3a"
-  subnet_id         = module.basic_network.private_subnet_id
-  key_name          = aws_key_pair.main_ec2_keypair.key_name
+  instance_type = "t2.micro"
+  ami           = "ami-09b1e8fc6368b8a3a"
+  subnet_id     = module.basic_network.private_subnet_id
+  key_name      = aws_key_pair.main_ec2_keypair.key_name
+  user_data = templatefile(
+    "resources/app-user-data.sh.tftpl",
+    {
+      squid_proxy_addr = format("http://%s:3128", aws_network_interface.proxy_private_eth.private_dns_name)
+    }
+  )
   source_dest_check = true
   root_block_device {
     delete_on_termination = true
@@ -38,4 +44,6 @@ resource "aws_instance" "app" {
   tags = merge({
     "Name" = "App Instance"
   }, var.general_tags)
+
+  depends_on = [aws_instance.nat, aws_instance.proxy]
 }
