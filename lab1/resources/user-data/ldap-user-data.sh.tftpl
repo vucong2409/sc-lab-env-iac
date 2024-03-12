@@ -1,0 +1,14 @@
+#!/bin/bash
+# This script should be run as root
+set -e
+
+# Install required package
+yum install -y 389-ds-base nfs-utils
+
+# Enable NFS Service
+systemctl enable nfs-server
+systemctl start nfs-server
+
+# Mount EFS service
+mkdir -p /mnt/nfs
+mount  -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${ efs-dns-addr }:/ /mnt/nfs

@@ -97,5 +97,9 @@ refresh_pattern .               0       20%     4320
 EOF
 
 # Enable squid proxy
-systemctl start squid amazon-cloudwatch-agent
-systemctl enable squid amazon-cloudwatch-agent
+systemctl start squid
+systemctl enable squid
+
+# Parse config and enable Cloudwatch Agent
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+

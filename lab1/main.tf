@@ -32,6 +32,7 @@ resource "aws_instance" "app" {
     "resources/user-data/app-user-data.sh.tftpl",
     {
       squid_proxy_addr = format("http://%s:3128", aws_network_interface.proxy_private_eth.private_dns_name)
+      efs-dns-addr     = aws_efs_file_system.ldap_efs.dns_name
     }
   )
   source_dest_check = true
