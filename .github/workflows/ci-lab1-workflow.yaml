@@ -7,6 +7,6 @@ jobs:
       # Get the code
       - uses: actions/checkout@v4
       # Setup terraform CLI
-      - uses: hashicorp/setup-terraform@v2.0.3          
+      - uses: hashicorp/setup-terraform@v2.0.3
       # Run lint
       - run: terraform fmt -check -recursive lab1

@@ -62,7 +62,7 @@ resource "aws_instance" "ldap" {
   user_data = templatefile(
     "resources/user-data/ldap-user-data.sh.tftpl",
     {
-      efs-dns-addr = aws_efs_file_system.ldap_efs.dns_name
+      efs-dns-addr       = aws_efs_file_system.ldap_efs.dns_name
       ldap_root_password = data.aws_ssm_parameter.directory_root_password.value
     }
   )
