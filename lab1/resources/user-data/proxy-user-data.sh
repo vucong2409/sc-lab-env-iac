@@ -24,7 +24,7 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<EOF
           {
             "file_path": "/var/log/squid/access.log",
             "log_group_class": "STANDARD",
-            "log_group_name": "Squid proxy log",
+            "log_group_name": "SquidProxyLog",
             "log_stream_name": "Access log - {instance_id}",
             "retention_in_days": 3
           }
@@ -33,17 +33,6 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<EOF
     }
   },
   "metrics": {
-    "aggregation_dimensions": [
-      [
-        "InstanceId"
-      ]
-    ],
-    "append_dimensions": {
-      "AutoScalingGroupName": "${aws:AutoScalingGroupName}",
-      "ImageId": "${aws:ImageId}",
-      "InstanceId": "${aws:InstanceId}",
-      "InstanceType": "${aws:InstanceType}"
-    },
     "metrics_collected": {
       "cpu": {
         "measurement": [
@@ -57,7 +46,11 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<EOF
       },
       "diskio": {
         "measurement": [
-          "io_time"
+          "io_time",
+          "write_bytes",
+          "read_bytes",
+          "writes",
+          "reads"
         ],
         "metrics_collection_interval": 60,
         "resources": [
@@ -71,8 +64,8 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<EOF
         "metrics_collection_interval": 60
       },
       "statsd": {
-        "metrics_aggregation_interval": 60,
-        "metrics_collection_interval": 60,
+        "metrics_aggregation_interval": 10,
+        "metrics_collection_interval": 10,
         "service_address": ":8125"
       }
     }

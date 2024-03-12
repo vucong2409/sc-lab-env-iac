@@ -11,6 +11,11 @@ resource "aws_iam_role_policy_attachment" "ec2_cw_role_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "ec2_cw_role_policy_attachment_2" {
+  role       = aws_iam_role.ec2_cw_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy"
+}
+
 # Use this instance profile to assign to EC2 that need to emit log to CW
 resource "aws_iam_instance_profile" "ec2_cw_instance_profile" {
   name = "ec2_cw_instance_profile"
