@@ -29,7 +29,7 @@ resource "aws_instance" "app" {
   subnet_id     = module.basic_network.private_subnet_id
   key_name      = aws_key_pair.main_ec2_keypair.key_name
   user_data = templatefile(
-    "resources/app-user-data.sh.tftpl",
+    "resources/user-data/app-user-data.sh.tftpl",
     {
       squid_proxy_addr = format("http://%s:3128", aws_network_interface.proxy_private_eth.private_dns_name)
     }

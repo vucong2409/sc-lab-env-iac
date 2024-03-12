@@ -38,10 +38,11 @@ resource "aws_network_interface" "proxy_private_eth" {
 
 // Proxy
 resource "aws_instance" "proxy" {
-  instance_type = "t2.micro"
-  ami           = "ami-09b1e8fc6368b8a3a"
-  key_name      = aws_key_pair.main_ec2_keypair.key_name
-  user_data     = file("resources/proxy-user-data.sh")
+  instance_type        = "t2.micro"
+  ami                  = "ami-09b1e8fc6368b8a3a"
+  key_name             = aws_key_pair.main_ec2_keypair.key_name
+  user_data            = file("resources/user-data/proxy-user-data.sh")
+  iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
   root_block_device {
     delete_on_termination = true
     volume_size           = 10

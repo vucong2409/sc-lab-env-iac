@@ -77,7 +77,7 @@ resource "aws_instance" "nat" {
   instance_type = "t2.micro"
   ami           = "ami-09b1e8fc6368b8a3a"
   key_name      = aws_key_pair.main_ec2_keypair.key_name
-  user_data     = file("resources/nat-user-data.sh")
+  user_data     = file("resources/user-data/nat-user-data.sh")
   root_block_device {
     delete_on_termination = true
     volume_size           = 10
