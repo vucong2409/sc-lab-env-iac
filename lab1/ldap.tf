@@ -47,6 +47,13 @@ resource "aws_efs_mount_target" "ldap_efs_mount_target" {
   security_groups = [aws_security_group.sg_for_ldap.id]
 }
 
+// Root Directory parameter
+// In production, it should be Secret Manager instead of SSM parameter.
+// But this is designed to run on free tier so...
+data "aws_ssm_parameter" "directory_root_password" {
+  name = "/ldap/instancepassword"
+}
+
 // LDAP
 resource "aws_instance" "ldap" {
   instance_type = "t2.micro"
@@ -56,6 +63,7 @@ resource "aws_instance" "ldap" {
     "resources/user-data/ldap-user-data.sh.tftpl",
     {
       efs-dns-addr = aws_efs_file_system.ldap_efs.dns_name
+      ldap_root_password = data.aws_ssm_parameter.directory_root_password.value
     }
   )
   root_block_device {

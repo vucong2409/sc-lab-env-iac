@@ -2,8 +2,100 @@
 # This script should be run as root
 set -e
 
-# Install LDAP lib
-yum install -y 389-ds-base nfs-utils
+# Install required package
+yum install -y 389-ds-base nfs-utils sssd
+
+##########################################
+# Enable & mount NFS
+##########################################
+
+# Enable NFS
+systemctl enable nfs-server
+systemctl start nfs-server
+
+# Mount EFS Service
+mkdir -p /mnt/nfs
+mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${ efs-dns-addr }:/ /mnt/nfs
+
+##########################################
+# Join LDAP
+##########################################
+
+# Populate sssd config
+cat > /etc/sssd/sssd.conf <<EOF
+[domain/ldap]
+debug_level=9
+
+cache_credentials = True
+id_provider = ldap
+auth_provider = ldap
+access_provider = ldap
+chpass_provider = ldap
+ldap_schema = rfc2307bis
+ldap_search_base = dc=example,dc=com
+ldap_uri = ldaps://${ ldap_server_dns_endpoint }
+
+ldap_tls_reqcert = demand
+ldap_tls_cacertdir = /etc/openldap/certs
+ldap_tls_cacert = /etc/openldap/certs/ca.crt
+
+ldap_access_filter = (memberOf=cn=server_admins,ou=Groups,dc=example,dc=com)
+
+enumerate = false
+access_provider = ldap
+ldap_user_member_of = memberof
+ldap_user_gecos = cn
+ldap_user_uuid = nsUniqueId
+ldap_group_uuid = nsUniqueId
+ldap_account_expire_policy = rhds
+ldap_access_order = filter, expire
+# Setup for ssh keys
+# Inside /etc/ssh/sshd_config add the lines:
+#   AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
+#   AuthorizedKeysCommandUser nobody
+# You can test with the command: sss_ssh_authorizedkeys <username>
+ldap_user_ssh_public_key = nsSshPublicKey
+ignore_group_members = False
+
+[sssd]
+services = nss, pam, ssh, sudo
+config_file_version = 2
+
+domains = ldap
+[nss]
+homedir_substring = /home
+EOF
+
+chmod 600 /etc/sssd/sssd.conf
+chown root:root /etc/sssd/sssd.conf
+
+# Get the cert from NFS and rehash it
+mkdir -p /etc/openldap/certs
+cp /mnt/nfs/certs/ca.crt  /etc/openldap/certs/ca.crt
+
+chmod 600 /etc/openldap/certs/ca.crt
+chown root:root /etc/openldap/certs/ca.crt
+
+/usr/bin/c_rehash /etc/openldap/certs
+
+# Enable password login
+echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
+
+# Setup for ssh key
+echo "AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys" >> /etc/ssh/sshd_config
+echo "AuthorizedKeysCommandUser nobody" >> /etc/ssh/sshd_config
+
+# Enable create home folder for LDAP user
+authconfig --enablemkhomedir --update
+
+# Start sssd & Restart sshd
+systemctl start sssd
+systemctl enable sssd
+systemctl restart sshd
+
+##########################################
+# Install weather service
+##########################################
 
 # Setup source code directory
 mkdir /opt/weather-report
@@ -62,9 +154,5 @@ EOF
 
 # Enable and run the service
 systemctl daemon-reload
-systemctl enable weather-report nfs-server
-systemctl start weather-report nfs-server
-
-# Mount EFS Service
-mkdir -p /mnt/nfs
-mount  -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${ efs-dns-addr }:/ /mnt/nfs
+systemctl enable weather-report
+systemctl start weather-report

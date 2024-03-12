@@ -5,6 +5,10 @@ set -e
 # Install required package
 yum install -y 389-ds-base nfs-utils
 
+##########################################
+# Enable & mount NFS
+##########################################
+
 # Enable NFS Service
 systemctl enable nfs-server
 systemctl start nfs-server
@@ -12,3 +16,50 @@ systemctl start nfs-server
 # Mount EFS service
 mkdir -p /mnt/nfs
 mount  -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${ efs-dns-addr }:/ /mnt/nfs
+
+##########################################
+# Setup LDAP
+##########################################
+# Ref: https://www.port389.org/docs/389ds/howto/quickstart.html
+
+# Populate config and create domain server
+cat > /root/instance.inf <<EOF
+[general]
+config_version = 2
+
+[slapd]
+root_password = ${ ldap_root_password }
+
+[backend-userroot]
+sample_entries = yes
+suffix = dc=example,dc=com
+EOF
+
+dscreate from-file /root/instance.inf
+
+# Setup local config file to connect to LDAP
+cat > /root/.dsrc <<EOF
+[localhost]
+# Note that '/' is replaced to '%%2f'.
+uri = ldapi://%%2fvar%%2frun%%2fslapd-localhost.socket
+basedn = dc=example,dc=com
+binddn = cn=Directory Manager
+EOF
+
+# Add self signed cert into openldap config
+echo "TLS_CACERT /etc/dirsrv/slapd-localhost/ca.crt" >> /etc/openldap/ldap.conf
+
+# Create admin group
+dsidm localhost group create --cn server_admins
+
+# Enable memberof plugin
+dsconf localhost plugin memberof enable
+dsctl localhost restart
+
+# Setup memberof plugin
+dsconf localhost plugin memberof set --scope dc=example,dc=com
+dsconf localhost plugin memberof fixup dc=example,dc=com
+
+# Copy cert to share folder
+mkdir -p /mnt/nfs/certs
+cp /etc/dirsrv/slapd-localhost/ca.crt /mnt/nfs/certs/ca.crt
