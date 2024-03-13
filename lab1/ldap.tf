@@ -74,6 +74,7 @@ resource "aws_instance" "ldap" {
       ldap_root_password = random_password.directory_root_password.result
     }
   )
+  iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
   root_block_device {
     delete_on_termination = true
     volume_size           = 10

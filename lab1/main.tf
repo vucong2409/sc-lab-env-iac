@@ -43,6 +43,7 @@ resource "aws_instance" "app" {
       ldap_server_dns_endpoint = aws_instance.ldap.private_dns
     }
   )
+  iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
   source_dest_check = true
   root_block_device {
     delete_on_termination = true
