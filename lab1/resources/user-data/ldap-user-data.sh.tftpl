@@ -3,7 +3,7 @@
 set -e
 
 # Install required package
-yum install -y 389-ds-base nfs-utils
+yum install -y 389-ds-base nfs-utils wget php php-ldap webserver php-gd
 
 ##########################################
 # Enable & mount NFS
@@ -63,3 +63,39 @@ dsconf localhost plugin memberof fixup dc=example,dc=com
 # Copy cert to share folder
 mkdir -p /mnt/nfs/certs
 cp /etc/dirsrv/slapd-localhost/ca.crt /mnt/nfs/certs/ca.crt
+
+##########################################
+# Setup phpldapadmin (LDAP UI)
+##########################################
+
+# Since phpldapadmin inside EPEL, and this instance doesn't have enough memory to
+# add EPEL, we need to download .rpm package from source and install by hand.
+# See https://forums.rockylinux.org/t/epel-can-not-be-used-in-rocky9/9738
+wget https://dl.fedoraproject.org/pub/epel/9/Everything/aarch64/Packages/p/phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+rpm -U ./phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+rm -f phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+
+# Override config to allow connection from all interface
+rm -f /etc/httpd/conf.d/phpldapadmin.conf
+cat > /etc/httpd/conf.d/phpldapadmin.conf <<EOF
+Alias /phpldapadmin /usr/share/phpldapadmin/htdocs
+Alias /ldapadmin /usr/share/phpldapadmin/htdocs
+
+<Directory /usr/share/phpldapadmin/htdocs>
+  <IfModule mod_authz_core.c>
+    # Apache 2.4
+    Require local
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    # Apache 2.2
+    Order Deny,Allow
+    Deny from all
+    Allow from 0.0.0.0
+    Allow from ::1
+  </IfModule>
+</Directory>
+EOF
+
+# Start the webserver
+systemctl enable httpd
+systemctl start httpd
