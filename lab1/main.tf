@@ -1,4 +1,11 @@
 terraform {
+  required_providers {
+    random = {
+      source  = "hashicorp/random"
+      version = "3.6.0"
+    }
+  }
+
   // Hard code bucket information instead of using variable since Terraform not support it.
   // See: https://github.com/hashicorp/terraform/issues/13022
   backend "s3" {
