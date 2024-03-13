@@ -44,7 +44,7 @@ resource "aws_instance" "app" {
     }
   )
   iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
-  source_dest_check = true
+  source_dest_check    = true
   root_block_device {
     delete_on_termination = true
     volume_size           = 10

@@ -62,5 +62,5 @@ resource "aws_instance" "proxy" {
   tags = merge({
     "Name" = "Proxy Instance"
   }, var.general_tags)
-  depends_on = [ aws_instance.ldap ]
+  depends_on = [aws_instance.ldap]
 }
