@@ -50,28 +50,6 @@ resource "aws_eip" "nat_eip" {
   associate_with_private_ip = aws_network_interface.public_eth_nat.private_ip
 }
 
-// Create route table for private subnet to point to NAT interface
-resource "aws_route_table" "private_to_nat" {
-  vpc_id = module.basic_network.vpc_id
-
-  route {
-    cidr_block = var.vpc_cidr
-    gateway_id = "local"
-  }
-
-  route {
-    cidr_block           = "0.0.0.0/0"
-    network_interface_id = aws_network_interface.private_eth_nat.id
-  }
-
-  tags = var.general_tags
-}
-
-resource "aws_route_table_association" "proxy_rt_assoc" {
-  subnet_id      = module.basic_network.private_subnet_id
-  route_table_id = aws_route_table.private_to_nat.id
-}
-
 // NAT
 resource "aws_instance" "nat" {
   instance_type = "t2.micro"

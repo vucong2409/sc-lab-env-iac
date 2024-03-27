@@ -17,3 +17,7 @@ output "normal_sg_id" {
 output "app_sg_id" {
   value = aws_security_group.sg_for_web_server.id
 }
+
+output "main_igw_id" {
+  value = aws_internet_gateway.main_igw.id
+}

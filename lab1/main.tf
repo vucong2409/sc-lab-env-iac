@@ -39,8 +39,7 @@ resource "aws_instance" "app" {
     "resources/user-data/app-user-data.sh.tftpl",
     {
       squid_proxy_addr         = format("http://%s:3128", aws_network_interface.proxy_private_eth.private_dns_name)
-      efs-dns-addr             = aws_efs_file_system.ldap_efs.dns_name
-      ldap_server_dns_endpoint = aws_instance.ldap.private_dns
+      ldap_server_dns_endpoint = aws_lb.ldap_nlb.dns_name
     }
   )
   iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
@@ -55,5 +54,5 @@ resource "aws_instance" "app" {
     "Name" = "App Instance"
   }, var.general_tags)
 
-  depends_on = [aws_instance.nat, aws_instance.proxy]
+  depends_on = [aws_instance.nat, aws_instance.proxy, aws_instance.ldap]
 }

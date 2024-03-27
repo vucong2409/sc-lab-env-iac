@@ -2,11 +2,23 @@ variable "vpc_cidr" {
   type = string
 }
 
+variable "ldap_vpc_cidr" {
+  type = string
+}
+
 variable "public_subnet_cidr" {
   type = string
 }
 
 variable "private_subnet_cidr" {
+  type = string
+}
+
+variable "public_ldap_subnet_cidr" {
+  type = string
+}
+
+variable "private_ldap_subnet_cidr" {
   type = string
 }
 

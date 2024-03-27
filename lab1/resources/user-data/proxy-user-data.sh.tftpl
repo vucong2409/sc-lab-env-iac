@@ -6,18 +6,6 @@ set -e
 yum install -y squid wget 389-ds-base nfs-utils sssd wget
 
 ##########################################
-# Enable & mount NFS
-##########################################
-
-# Enable NFS
-systemctl enable nfs-server
-systemctl start nfs-server
-
-# Mount EFS Service
-mkdir -p /mnt/nfs
-mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${ efs-dns-addr }:/ /mnt/nfs
-
-##########################################
 # Setup Squid proxy
 ##########################################
 
@@ -106,7 +94,7 @@ ldap_schema = rfc2307bis
 ldap_search_base = dc=example,dc=com
 ldap_uri = ldaps://${ ldap_server_dns_endpoint }
 
-ldap_tls_reqcert = demand
+ldap_tls_reqcert = never
 ldap_tls_cacertdir = /etc/openldap/certs
 ldap_tls_cacert = /etc/openldap/certs/ca.crt
 
@@ -139,15 +127,6 @@ EOF
 
 chmod 600 /etc/sssd/sssd.conf
 chown root:root /etc/sssd/sssd.conf
-
-# Get the cert from NFS and rehash it
-mkdir -p /etc/openldap/certs
-cp /mnt/nfs/certs/ca.crt  /etc/openldap/certs/ca.crt
-
-chmod 600 /etc/openldap/certs/ca.crt
-chown root:root /etc/openldap/certs/ca.crt
-
-/usr/bin/c_rehash /etc/openldap/certs
 
 # Enable password login
 echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
