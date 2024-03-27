@@ -1,16 +1,24 @@
 // Allow all traffic from internal VPC.
 // Allow SSH from internet.
+// Allow LDAP query from internet.
 resource "aws_security_group" "sg_for_ldap" {
   ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "all"
-    cidr_blocks = [var.vpc_cidr]
+    cidr_blocks = [var.ldap_vpc_cidr]
   }
 
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 389
+    to_port     = 389
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
