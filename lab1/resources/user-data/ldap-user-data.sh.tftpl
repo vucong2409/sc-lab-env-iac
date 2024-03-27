@@ -6,18 +6,6 @@ set -e
 yum install -y 389-ds-base nfs-utils wget php php-ldap webserver php-gd
 
 ##########################################
-# Enable & mount NFS
-##########################################
-
-# Enable NFS Service
-systemctl enable nfs-server
-systemctl start nfs-server
-
-# Mount EFS service
-mkdir -p /mnt/nfs
-mount  -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${ efs-dns-addr }:/ /mnt/nfs
-
-##########################################
 # Setup LDAP
 ##########################################
 # Ref: https://www.port389.org/docs/389ds/howto/quickstart.html
@@ -60,9 +48,6 @@ dsctl localhost restart
 dsconf localhost plugin memberof set --scope dc=example,dc=com
 dsconf localhost plugin memberof fixup dc=example,dc=com
 
-# Copy cert to share folder
-mkdir -p /mnt/nfs/certs
-cp /etc/dirsrv/slapd-localhost/ca.crt /mnt/nfs/certs/ca.crt
 
 ##########################################
 # Setup phpldapadmin (LDAP UI)

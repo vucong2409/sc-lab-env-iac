@@ -44,7 +44,6 @@ resource "aws_instance" "proxy" {
   user_data = templatefile(
     "resources/user-data/proxy-user-data.sh.tftpl",
     {
-      efs-dns-addr             = aws_efs_file_system.ldap_efs.dns_name
       ldap_server_dns_endpoint = aws_instance.ldap.private_dns
     }
   )

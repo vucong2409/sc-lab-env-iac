@@ -1,4 +1,4 @@
-# Define required resource for LDAP (VPC/NFS for sharing cert/...)
+# Define required resource for LDAP (VPC/...)
 module "ldap_vpc" {
   source              = "../modules/basic-network-with-nat"
   vpc_region          = var.vpc_region
@@ -10,7 +10,7 @@ module "ldap_vpc" {
 }
 
 resource "aws_vpc_peering_connection" "ldap_app_vpc_peering" {
-  vpc_id = module.basic_network.vpc_id
+  vpc_id      = module.basic_network.vpc_id
   peer_vpc_id = module.ldap_vpc.vpc_id
 
   accepter {

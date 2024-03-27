@@ -23,6 +23,14 @@ resource "aws_security_group" "sg_for_ldap" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 636
+    to_port     = 636
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -64,7 +72,6 @@ resource "aws_instance" "ldap" {
   user_data = templatefile(
     "resources/user-data/ldap-user-data.sh.tftpl",
     {
-      efs-dns-addr       = aws_efs_file_system.ldap_efs.dns_name
       ldap_root_password = random_password.directory_root_password.result
     }
   )
@@ -79,7 +86,7 @@ resource "aws_instance" "ldap" {
     device_index         = 0
   }
 
-  depends_on = [aws_efs_file_system.ldap_efs]
+  depends_on = [aws_route_table_association.private_subnet_rt_with_peering_ldap_vpc_assoc]
 
   tags = merge({
     "Name" = "LDAP Instance"

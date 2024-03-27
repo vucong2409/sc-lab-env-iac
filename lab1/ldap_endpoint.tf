@@ -43,8 +43,45 @@ resource "aws_lb_target_group" "ldap_tg" {
   vpc_id      = module.ldap_vpc.vpc_id
 }
 
+
+resource "aws_lb_target_group" "ldaps_tg" {
+  port        = 636
+  protocol    = "TCP"
+  target_type = "instance"
+  vpc_id      = module.ldap_vpc.vpc_id
+}
+
+
 resource "aws_lb_target_group_attachment" "ldap_tg_attachment" {
   target_group_arn = aws_lb_target_group.ldap_tg.arn
   target_id        = aws_instance.ldap.id
   port             = 389
+}
+
+resource "aws_lb_target_group_attachment" "ldaps_tg_attachment" {
+  target_group_arn = aws_lb_target_group.ldaps_tg.arn
+  target_id        = aws_instance.ldap.id
+  port             = 636
+}
+
+resource "aws_lb_listener" "ldap_nlb_listener" {
+  load_balancer_arn = aws_lb.ldap_nlb.arn
+  port              = "389"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ldap_tg.arn
+  }
+}
+
+resource "aws_lb_listener" "ldaps_nlb_listener" {
+  load_balancer_arn = aws_lb.ldap_nlb.arn
+  port              = "636"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ldaps_tg.arn
+  }
 }
