@@ -20,16 +20,6 @@ resource "aws_key_pair" "main_ec2_keypair" {
   public_key = var.owner_public_key
 }
 
-module "basic_network" {
-  source              = "../modules/basic-network"
-  vpc_region          = var.vpc_region
-  vpc_cidr            = var.vpc_cidr
-  public_subnet_cidr  = var.public_subnet_cidr
-  private_subnet_cidr = var.private_subnet_cidr
-  subnet_az           = var.subnet_az
-  general_tags        = var.general_tags
-}
-
 resource "aws_instance" "app" {
   instance_type = "t2.micro"
   ami           = "ami-09b1e8fc6368b8a3a"
@@ -39,7 +29,7 @@ resource "aws_instance" "app" {
     "resources/user-data/app-user-data.sh.tftpl",
     {
       squid_proxy_addr         = format("http://%s:3128", aws_network_interface.proxy_private_eth.private_dns_name)
-      ldap_server_dns_endpoint = aws_lb.ldap_nlb.dns_name
+      ldap_server_dns_endpoint = module.ldap_instance.ldap_nlb_dns_endpoint
     }
   )
   iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
@@ -54,5 +44,5 @@ resource "aws_instance" "app" {
     "Name" = "App Instance"
   }, var.general_tags)
 
-  depends_on = [aws_instance.nat, aws_instance.proxy, aws_instance.ldap]
+  depends_on = [aws_instance.nat, aws_instance.proxy, module.ldap_instance]
 }

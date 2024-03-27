@@ -49,7 +49,7 @@ resource "aws_security_group" "sg_for_ldap_nlb" {
     protocol    = "all"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  vpc_id = module.ldap_vpc.vpc_id
+  vpc_id = var.vpc_id
   tags = merge({
     "Name" = "Security Group for LDAP Network Load Balancer"
   },var.general_tags)

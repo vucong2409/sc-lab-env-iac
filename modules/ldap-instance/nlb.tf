@@ -8,7 +8,7 @@ resource "aws_lb" "ldap_nlb" {
     var.subnet_id
   ]
   security_groups = [
-    aws_security_group.sg_for_ldap_nlb
+    aws_security_group.sg_for_ldap_nlb.id
   ]
 
   # Other settings
