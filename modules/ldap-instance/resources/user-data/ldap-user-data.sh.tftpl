@@ -1,0 +1,123 @@
+#!/bin/bash
+# This script should be run as root
+set -e
+
+# Install required package
+yum install -y 389-ds-base nfs-utils wget php php-ldap webserver php-gd
+
+##########################################
+# Setup LDAP
+##########################################
+# Ref: https://www.port389.org/docs/389ds/howto/quickstart.html
+
+# Populate config and create domain server
+cat > /root/instance.inf <<EOF
+[general]
+config_version = 2
+
+[slapd]
+root_password = ${ ldap_root_password }
+
+[backend-userroot]
+sample_entries = yes
+suffix = dc=example,dc=com
+EOF
+
+dscreate from-file /root/instance.inf
+
+# Setup local config file to connect to LDAP
+cat > /root/.dsrc <<EOF
+[localhost]
+# Note that '/' is replaced to '%%2f'.
+uri = ldapi://%%2fvar%%2frun%%2fslapd-localhost.socket
+basedn = dc=example,dc=com
+binddn = cn=Directory Manager
+EOF
+
+# Add self signed cert into openldap config
+echo "TLS_CACERT /etc/dirsrv/slapd-localhost/ca.crt" >> /etc/openldap/ldap.conf
+
+# Create admin group
+dsidm localhost group create --cn server_admins
+
+# Enable memberof plugin
+dsconf localhost plugin memberof enable
+dsctl localhost restart
+
+# Setup memberof plugin
+dsconf localhost plugin memberof set --scope dc=example,dc=com
+dsconf localhost plugin memberof fixup dc=example,dc=com
+
+
+##########################################
+# Setup phpldapadmin (LDAP UI)
+##########################################
+
+# Since phpldapadmin inside EPEL, and this instance doesn't have enough memory to
+# add EPEL, we need to download .rpm package from source and install by hand.
+# See https://forums.rockylinux.org/t/epel-can-not-be-used-in-rocky9/9738
+wget https://dl.fedoraproject.org/pub/epel/9/Everything/aarch64/Packages/p/phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+rpm -U ./phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+rm -f phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+
+# Override config to allow connection from all interface
+rm -f /etc/httpd/conf.d/phpldapadmin.conf
+cat > /etc/httpd/conf.d/phpldapadmin.conf <<EOF
+Alias /phpldapadmin /usr/share/phpldapadmin/htdocs
+Alias /ldapadmin /usr/share/phpldapadmin/htdocs
+
+<Directory /usr/share/phpldapadmin/htdocs>
+  <IfModule mod_authz_core.c>
+    # Apache 2.4
+    Require local
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    # Apache 2.2
+    Order Deny,Allow
+    Deny from all
+    Allow from 0.0.0.0
+    Allow from ::1
+  </IfModule>
+</Directory>
+EOF
+
+# Start the webserver
+systemctl enable httpd
+systemctl start httpd
+
+##########################################
+# Setup Cloudwatch agent
+##########################################
+
+# Install CloudWatch Agent
+wget https://amazoncloudwatch-agent.s3.amazonaws.com/redhat/amd64/latest/amazon-cloudwatch-agent.rpm
+rpm -U ./amazon-cloudwatch-agent.rpm
+rm amazon-cloudwatch-agent.rpm
+
+# Setup Cloudwatch agent
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<EOF
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/dirsrv/slapd-localhost/access",
+            "log_group_class": "STANDARD",
+            "log_group_name": "LDAPAccessLog",
+            "log_stream_name": "LDAP Access log - {instance_id}",
+            "retention_in_days": 3
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+
+# Parse config and enable Cloudwatch Agent
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json

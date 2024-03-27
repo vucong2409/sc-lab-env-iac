@@ -14,8 +14,12 @@ variable "ec2_key_name" {
   type = string
 }
 
-variable "ec2_instance_profile" {
+variable "lb_internal" {
+  type = bool
+}
 
+variable "ec2_instance_profile_name" {
+  type = string
 }
 
 variable "general_tags" {
