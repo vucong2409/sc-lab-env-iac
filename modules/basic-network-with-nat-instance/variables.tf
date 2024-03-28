@@ -18,6 +18,10 @@ variable "subnet_az" {
   type = string
 }
 
+variable "nat_instance_key_name" {
+  type = string
+}
+
 variable "general_tags" {
   type = map(string)
 }

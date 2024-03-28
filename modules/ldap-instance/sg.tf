@@ -31,7 +31,7 @@ resource "aws_security_group" "sg_for_ldap" {
   vpc_id = var.vpc_id
   tags = merge({
     "Name" = "Security Group for LDAP Instance"
-  },var.general_tags)
+  }, var.general_tags)
 }
 
 // Allow all
@@ -52,5 +52,5 @@ resource "aws_security_group" "sg_for_ldap_nlb" {
   vpc_id = var.vpc_id
   tags = merge({
     "Name" = "Security Group for LDAP Network Load Balancer"
-  },var.general_tags)
+  }, var.general_tags)
 }
