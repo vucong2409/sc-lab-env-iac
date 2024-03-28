@@ -19,7 +19,7 @@ resource "aws_eip" "nat_eip" {
   network_interface         = aws_network_interface.public_eth_nat_interface.id
   associate_with_private_ip = aws_network_interface.public_eth_nat_interface.private_ip
 
-  depends_on = [aws_instance.nat]
+  depends_on = [aws_instance.public_eth_nat_interface]
 }
 
 resource "aws_instance" "nat" {
