@@ -1,5 +1,5 @@
 module "basic_network" {
-  source              = "../modules/basic-network"
+  source              = "../modules/basic-network-with-nat-instance"
   vpc_region          = var.vpc_region
   vpc_cidr            = var.vpc_cidr
   public_subnet_cidr  = var.public_subnet_cidr
