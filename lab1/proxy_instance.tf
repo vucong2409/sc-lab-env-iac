@@ -42,7 +42,7 @@ resource "aws_instance" "proxy" {
   user_data = templatefile(
     "resources/user-data/proxy-user-data.sh.tftpl",
     {
-      ldap_server_dns_endpoint = module.ldap_instance.ldap_nlb_dns_endpoint
+      ldap_server_dns_endpoint = aws_vpc_endpoint.ldap_vpc_endpoint.dns_entry[0]["dns_name"]
     }
   )
   iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name

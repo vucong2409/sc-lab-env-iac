@@ -29,7 +29,7 @@ resource "aws_instance" "app" {
     "resources/user-data/app-user-data.sh.tftpl",
     {
       squid_proxy_addr         = format("http://%s:3128", aws_network_interface.proxy_private_eth.private_dns_name)
-      ldap_server_dns_endpoint = module.ldap_instance.ldap_nlb_dns_endpoint
+      ldap_server_dns_endpoint = aws_vpc_endpoint.ldap_vpc_endpoint.dns_entry[0]["dns_name"]
     }
   )
   iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
