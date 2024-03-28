@@ -17,3 +17,7 @@ output "ldap_private_link_svc_id" {
 output "ldap_private_link_svc_arm" {
   value = aws_vpc_endpoint_service.ldap_private_link_svc.arn
 }
+
+output "ldap_private_link_svc_name" {
+  value = aws_vpc_endpoint_service.ldap_private_link_svc.service_name
+}
