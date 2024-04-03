@@ -8,21 +8,21 @@ resource "aws_network_acl" "nacl_allow_all" {
 
 
   ingress {
-    protocol   = "all"
+    protocol   = local.protocol_all
     rule_no    = 32766
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
+    action     = local.action_allow
+    cidr_block = local.cidr_all
+    from_port  = local.port_0
+    to_port    = local.port_0
   }
 
   egress {
-    protocol   = "all"
+    protocol   = local.protocol_all
     rule_no    = 32766
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
+    action     = local.action_allow
+    cidr_block = local.cidr_all
+    from_port  = local.port_0
+    to_port    = local.port_0
   }
 
   tags = var.general_tags
@@ -33,39 +33,39 @@ resource "aws_network_acl" "nacl_allow_local_only" {
   vpc_id = aws_vpc.main_vpc.id
 
   ingress {
-    protocol   = "all"
+    protocol   = local.protocol_all
     rule_no    = 32766
-    action     = "deny"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
+    action     = local.action_deny
+    cidr_block = local.cidr_all
+    from_port  = local.port_0
+    to_port    = local.port_0
   }
 
   egress {
-    protocol   = "all"
+    protocol   = local.protocol_all
     rule_no    = 32766
-    action     = "deny"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
+    action     = local.action_deny
+    cidr_block = local.cidr_all
+    from_port  = local.port_0
+    to_port    = local.port_0
   }
 
   ingress {
-    protocol   = "all"
+    protocol   = local.protocol_all
     rule_no    = 100
-    action     = "allow"
+    action     = local.action_allow
     cidr_block = aws_vpc.main_vpc.cidr_block
-    from_port  = 0
-    to_port    = 0
+    from_port  = local.port_0
+    to_port    = local.port_0
   }
 
   egress {
-    protocol   = "all"
+    protocol   = local.protocol_all
     rule_no    = 100
-    action     = "allow"
+    action     = local.action_allow
     cidr_block = aws_vpc.main_vpc.cidr_block
-    from_port  = 0
-    to_port    = 0
+    from_port  = local.port_0
+    to_port    = local.port_0
   }
 
   tags = var.general_tags

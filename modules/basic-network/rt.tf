@@ -3,7 +3,7 @@ resource "aws_route_table" "main_public_subnet_rt" {
   vpc_id = aws_vpc.main_vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = local.cidr_all
     gateway_id = aws_internet_gateway.main_igw.id
   }
 

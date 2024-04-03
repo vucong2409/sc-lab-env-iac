@@ -1,15 +1,15 @@
 resource "aws_subnet" "main_public_subnet" {
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = var.public_subnet_cidr
+  cidr_block              = local.cidr_public_subnet
   availability_zone       = var.subnet_az
-  map_public_ip_on_launch = "true"
+  map_public_ip_on_launch = true
 
   tags = var.general_tags
 }
 
 resource "aws_subnet" "main_private_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = var.private_subnet_cidr
+  cidr_block        = local.cidr_private_subnet
   availability_zone = var.subnet_az
 
   tags = var.general_tags
