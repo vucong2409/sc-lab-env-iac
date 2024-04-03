@@ -11,8 +11,8 @@ resource "aws_eip" "nat_eip" {
 
 resource "aws_nat_gateway" "main_internet_nat_gw" {
   connectivity_type = "public"
-  subnet_id = aws_subnet.main_public_subnet.id
-  allocation_id = aws_eip.nat_eip.id
+  subnet_id         = aws_subnet.main_public_subnet.id
+  allocation_id     = aws_eip.nat_eip.id
 
   tags = var.general_tags
 }

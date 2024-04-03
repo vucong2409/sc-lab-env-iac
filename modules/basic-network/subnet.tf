@@ -16,7 +16,7 @@ resource "aws_subnet" "main_private_subnet" {
 }
 
 resource "aws_route_table_association" "main_public_subnet_rt_assoc" {
-  subnet_id = aws_subnet.main_public_subnet.id
+  subnet_id      = aws_subnet.main_public_subnet.id
   route_table_id = aws_route_table.main_public_subnet_rt.id
 }
 
