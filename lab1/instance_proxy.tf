@@ -1,33 +1,5 @@
-// Allow all traffic from internal VPC.
-// Allow SSH from internet.
-resource "aws_security_group" "sg_for_proxy" {
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    cidr_blocks = [var.vpc_cidr]
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  vpc_id = module.basic_network.vpc_id
-
-  tags = var.general_tags
-}
-
 resource "aws_network_interface" "proxy_private_eth" {
-  subnet_id         = module.basic_network.private_subnet_id
+  subnet_id         = module.app_vpc.private_subnet_id
   security_groups   = [aws_security_group.sg_for_proxy.id]
   source_dest_check = false
 
@@ -36,13 +8,13 @@ resource "aws_network_interface" "proxy_private_eth" {
 
 // Proxy
 resource "aws_instance" "proxy" {
-  instance_type = "t2.micro"
-  ami           = "ami-09b1e8fc6368b8a3a"
+  instance_type = local.ec2_instance_type_t2_micro
+  ami           = local.ec2_instance_rhel_8_ami
   key_name      = aws_key_pair.main_ec2_keypair.key_name
   user_data = templatefile(
     "resources/user-data/proxy-user-data.sh.tftpl",
     {
-      ldap_server_dns_endpoint = aws_vpc_endpoint.ldap_vpc_endpoint.dns_entry[0]["dns_name"]
+      ldap_server_dns_endpoint = local.endpoint_ldap_server
     }
   )
   iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
