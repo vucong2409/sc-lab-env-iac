@@ -1,10 +1,10 @@
 # Define required resource for LDAP (VPC/...)
 module "ldap_vpc" {
-  source              = "../modules/basic-network-with-nat-gateway"
-  vpc_region          = var.vpc_region
-  vpc_cidr            = var.ldap_vpc_cidr
-  public_subnet_cidr  = var.public_ldap_subnet_cidr
-  private_subnet_cidr = var.private_ldap_subnet_cidr
-  subnet_az           = var.subnet_az
-  general_tags        = var.general_tags
+  source           = "../modules/basic-network"
+  vpc_region       = var.vpc_region
+  vpc_cidr         = var.ldap_vpc_cidr
+  subnet_az        = var.subnet_az
+  nat_device_type  = 1
+  ec2_keypair_name = aws_key_pair.main_ec2_keypair.key_name
+  general_tags     = var.general_tags
 }
