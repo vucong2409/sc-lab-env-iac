@@ -28,6 +28,13 @@ variable "subnet_az" {
   EOT
 }
 
+variable "ec2_keypair_name" {
+  type        = string
+  description = <<EOT
+  Keypair to add into related EC2 instance (e.g. NAT Instance)
+  EOT
+}
+
 variable "nat_device_type" {
   type        = number
   description = <<EOT

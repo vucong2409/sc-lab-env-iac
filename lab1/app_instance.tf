@@ -44,5 +44,5 @@ resource "aws_instance" "app" {
     "Name" = "App Instance"
   }, var.general_tags)
 
-  depends_on = [aws_instance.nat, aws_instance.proxy, module.ldap_instance]
+  depends_on = [module.basic_network, aws_instance.proxy, module.ldap_instance]
 }

@@ -9,3 +9,25 @@ resource "aws_route_table" "main_public_subnet_rt" {
 
   tags = var.general_tags
 }
+
+resource "aws_route_table" "main_private_subnet_rt" {
+  vpc_id = aws_vpc.main_vpc.id
+
+  tags = var.general_tags
+}
+
+resource "aws_route" "private_subnet_to_nat_gateway" {
+  count          = local.count_nat_gw_resources
+  route_table_id = aws_route_table.main_private_subnet_rt.id
+
+  destination_cidr_block = local.cidr_all
+  nat_gateway_id         = aws_nat_gateway.main_internet_nat_gw[0].id
+}
+
+resource "aws_route" "private_subnet_to_nat_instance" {
+  count          = local.count_nat_instance_resources
+  route_table_id = aws_route_table.main_private_subnet_rt.id
+
+  destination_cidr_block = local.cidr_all
+  network_interface_id   = aws_network_interface.private_eth_nat_instance[0].id
+}

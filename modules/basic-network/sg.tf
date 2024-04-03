@@ -58,3 +58,34 @@ resource "aws_security_group" "sg_for_web_server" {
 
   tags = var.general_tags
 }
+
+// Allow all traffic from internal VPC
+// Allow SSH from internet.
+resource "aws_security_group" "sg_for_nat_instance" {
+  count = local.count_nat_instance_resources
+
+  ingress {
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  ingress {
+    from_port   = local.port_ssh
+    to_port     = local.port_ssh
+    protocol    = local.protocol_tcp
+    cidr_blocks = [local.cidr_all]
+  }
+
+  egress {
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [local.cidr_all]
+  }
+
+  vpc_id = aws_vpc.main_vpc.id
+
+  tags = var.general_tags
+}
