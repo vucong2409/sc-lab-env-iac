@@ -15,6 +15,13 @@ resource "aws_lb" "ldap_nlb" {
   dns_record_client_routing_policy = "availability_zone_affinity"
   enable_cross_zone_load_balancing = false
   enable_deletion_protection       = false
+
+  tags = merge(
+    {
+      "Name" = "NLB for LDAP Instance"
+    },
+    var.general_tags
+  )
 }
 
 resource "aws_lb_listener" "ldap_nlb_listener" {

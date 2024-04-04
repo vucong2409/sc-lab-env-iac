@@ -1,5 +1,6 @@
 module "app_vpc" {
   source           = "../modules/basic-network"
+  vpc_name         = "Application VPC"
   vpc_region       = var.vpc_region
   vpc_cidr         = var.vpc_cidr
   subnet_az        = var.subnet_az

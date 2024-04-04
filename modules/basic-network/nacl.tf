@@ -25,7 +25,10 @@ resource "aws_network_acl" "nacl_allow_all" {
     to_port    = local.port_0
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("NACL allow all access of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 // Allow all local traffic, block all other traffic
@@ -68,5 +71,8 @@ resource "aws_network_acl" "nacl_allow_local_only" {
     to_port    = local.port_0
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("NACL allow access from local only of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
