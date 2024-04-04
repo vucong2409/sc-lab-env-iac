@@ -54,3 +54,25 @@ resource "aws_security_group" "sg_for_ldap_nlb" {
     "Name" = "Security Group for LDAP Network Load Balancer"
   }, var.general_tags)
 }
+
+resource "aws_security_group" "sg_for_jumphost" {
+  ingress {
+    from_port   = local.port_ssh
+    to_port     = local.port_ssh
+    protocol    = local.protocol_tcp
+    cidr_blocks = [local.cidr_all]
+  }
+
+  egress {
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [local.cidr_all]
+  }
+
+  vpc_id = var.vpc_id
+
+  tags = merge({
+    "Name" = "Security Group for LDAP Jumphost"
+  }, var.general_tags)
+}

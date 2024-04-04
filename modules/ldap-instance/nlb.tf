@@ -5,7 +5,7 @@ resource "aws_lb" "ldap_nlb" {
   # Core settings
   ip_address_type = local.ip_addr_type_ipv4
   subnets = [
-    var.subnet_id
+    var.ldap_subnet_id
   ]
   security_groups = [
     aws_security_group.sg_for_ldap_nlb.id

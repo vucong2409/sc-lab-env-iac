@@ -1,5 +1,5 @@
 resource "aws_network_interface" "ldap_private_eth" {
-  subnet_id         = var.subnet_id
+  subnet_id         = var.ldap_subnet_id
   security_groups   = [aws_security_group.sg_for_ldap.id]
   source_dest_check = true
 
