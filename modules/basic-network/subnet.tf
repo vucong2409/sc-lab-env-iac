@@ -4,7 +4,10 @@ resource "aws_subnet" "main_public_subnet" {
   availability_zone       = var.subnet_az
   map_public_ip_on_launch = true
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Main public subnet of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 resource "aws_subnet" "main_private_subnet" {
@@ -12,7 +15,10 @@ resource "aws_subnet" "main_private_subnet" {
   cidr_block        = local.cidr_private_subnet
   availability_zone = var.subnet_az
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Main private subnet of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 resource "aws_route_table_association" "main_public_subnet_rt_assoc" {

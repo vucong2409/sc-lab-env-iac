@@ -5,5 +5,8 @@ resource "aws_nat_gateway" "main_internet_nat_gw" {
   subnet_id     = aws_subnet.main_public_subnet.id
   allocation_id = aws_eip.nat_gateway_eip[0].id
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Main NAT Gateway of %s", var.vpc_name)
+    },
+  var.general_tags)
 }

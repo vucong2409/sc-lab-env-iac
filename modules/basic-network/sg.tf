@@ -28,7 +28,10 @@ resource "aws_security_group" "sg_for_normal_instance" {
     cidr_blocks = [local.cidr_all]
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Security group for normal instance inside %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 // Open port 80/tcp + 443/tcp only.
@@ -56,7 +59,10 @@ resource "aws_security_group" "sg_for_web_server" {
     cidr_blocks = [local.cidr_all]
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Security group for web server inside %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 // Allow all traffic from internal VPC
@@ -87,5 +93,8 @@ resource "aws_security_group" "sg_for_nat_instance" {
 
   vpc_id = aws_vpc.main_vpc.id
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Security group for NAT instance inside %s", var.vpc_name)
+    },
+  var.general_tags)
 }

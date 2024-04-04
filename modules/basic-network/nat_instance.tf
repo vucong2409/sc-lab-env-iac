@@ -5,7 +5,10 @@ resource "aws_network_interface" "public_eth_nat_instance" {
   security_groups   = [aws_security_group.sg_for_nat_instance[0].id]
   source_dest_check = false
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Public ETH for NAT instance of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 resource "aws_network_interface" "private_eth_nat_instance" {
@@ -15,7 +18,10 @@ resource "aws_network_interface" "private_eth_nat_instance" {
   security_groups   = [aws_security_group.sg_for_nat_instance[0].id]
   source_dest_check = false
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Private ETH for NAT instance of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 resource "aws_instance" "nat_instance" {
@@ -42,6 +48,7 @@ resource "aws_instance" "nat_instance" {
   }
 
   tags = merge({
-    "Name" = "NAT Instance"
-  }, var.general_tags)
+    "Name" = format("NAT Instance of %s", var.vpc_name)
+    },
+  var.general_tags)
 }

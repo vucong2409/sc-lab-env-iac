@@ -1,3 +1,11 @@
+variable "vpc_name" {
+  type        = string
+  description = <<EOT
+  Name of the VPC.
+  Other resources inside this VPC also generate name based on this VPC Name.
+  EOT
+}
+
 variable "vpc_cidr" {
   type        = string
   description = "CIDR of the VPC."

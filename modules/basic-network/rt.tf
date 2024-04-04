@@ -7,13 +7,19 @@ resource "aws_route_table" "main_public_subnet_rt" {
     gateway_id = aws_internet_gateway.main_igw.id
   }
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Route table for public subnet of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 resource "aws_route_table" "main_private_subnet_rt" {
   vpc_id = aws_vpc.main_vpc.id
 
-  tags = var.general_tags
+  tags = merge({
+    "Name" = format("Route table for private subnet of %s", var.vpc_name)
+    },
+  var.general_tags)
 }
 
 resource "aws_route" "private_subnet_to_nat_gateway" {
