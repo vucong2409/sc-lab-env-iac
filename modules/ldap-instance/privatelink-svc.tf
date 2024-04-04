@@ -5,7 +5,7 @@ resource "aws_vpc_endpoint_service" "ldap_private_link_svc" {
   ]
 
   supported_ip_address_types = [
-    "ipv4"
+    local.ip_addr_type_ipv4
   ]
 
   tags = merge(

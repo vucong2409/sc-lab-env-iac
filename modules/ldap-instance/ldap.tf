@@ -9,8 +9,8 @@ resource "aws_network_interface" "ldap_private_eth" {
 }
 
 resource "aws_instance" "ldap" {
-  instance_type = "t2.micro"
-  ami           = "ami-09b1e8fc6368b8a3a"
+  instance_type = local.ec2_instance_type_t2_micro
+  ami           = local.ec2_instance_rhel_8_ami
   key_name      = var.ec2_key_name
 
   user_data = templatefile(
