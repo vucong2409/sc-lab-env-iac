@@ -1,32 +1,32 @@
 // Allow SSH, LDAP and LDAPS request from internet.
 resource "aws_security_group" "sg_for_ldap" {
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = local.port_ssh
+    to_port     = local.port_ssh
+    protocol    = local.protocol_tcp
+    cidr_blocks = [local.cidr_all]
   }
 
   ingress {
-    from_port   = 389
-    to_port     = 389
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = local.port_ldap
+    to_port     = local.port_ldap
+    protocol    = local.protocol_tcp
+    cidr_blocks = [local.cidr_all]
   }
 
   ingress {
-    from_port   = 636
-    to_port     = 636
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = local.port_ldaps
+    to_port     = local.port_ldaps
+    protocol    = local.protocol_tcp
+    cidr_blocks = [local.cidr_all]
   }
 
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [local.cidr_all]
   }
   vpc_id = var.vpc_id
   tags = merge({
@@ -37,20 +37,42 @@ resource "aws_security_group" "sg_for_ldap" {
 // Allow all
 resource "aws_security_group" "sg_for_ldap_nlb" {
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [local.cidr_all]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [local.cidr_all]
   }
   vpc_id = var.vpc_id
   tags = merge({
     "Name" = "Security Group for LDAP Network Load Balancer"
+  }, var.general_tags)
+}
+
+resource "aws_security_group" "sg_for_jumphost" {
+  ingress {
+    from_port   = local.port_ssh
+    to_port     = local.port_ssh
+    protocol    = local.protocol_tcp
+    cidr_blocks = [local.cidr_all]
+  }
+
+  egress {
+    from_port   = local.port_0
+    to_port     = local.port_0
+    protocol    = local.protocol_all
+    cidr_blocks = [local.cidr_all]
+  }
+
+  vpc_id = var.vpc_id
+
+  tags = merge({
+    "Name" = "Security Group for LDAP Jumphost"
   }, var.general_tags)
 }

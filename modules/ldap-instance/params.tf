@@ -9,6 +9,6 @@ resource "random_password" "directory_root_password" {
 
 resource "aws_ssm_parameter" "directory_root_password_param" {
   name  = "/ldap/instancepassword"
-  type  = "String"
+  type  = local.ssm_param_type_string
   value = random_password.directory_root_password.result
 }
