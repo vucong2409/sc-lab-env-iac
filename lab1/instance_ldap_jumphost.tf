@@ -1,28 +1,6 @@
-resource "aws_security_group" "sg_for_jumphost" {
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  vpc_id = module.ldap_vpc.vpc_id
-
-  tags = var.general_tags
-}
-
 resource "aws_instance" "ldap_jumphost" {
-  instance_type = "t2.micro"
-  ami           = "ami-09b1e8fc6368b8a3a"
+  instance_type = local.ec2_instance_type_t2_micro
+  ami           = local.ec2_instance_rhel_8_ami
   key_name      = aws_key_pair.main_ec2_keypair.key_name
 
   root_block_device {

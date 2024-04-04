@@ -1,4 +1,3 @@
-# Define required resource for LDAP (VPC/...)
 module "ldap_vpc" {
   source           = "../modules/basic-network"
   vpc_region       = var.vpc_region

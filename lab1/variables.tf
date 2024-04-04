@@ -1,31 +1,29 @@
 variable "vpc_cidr" {
-  type = string
+  type        = string
+  description = "CIDR of application VPC."
 }
 
 variable "ldap_vpc_cidr" {
-  type = string
-}
-
-variable "public_ldap_subnet_cidr" {
-  type = string
-}
-
-variable "private_ldap_subnet_cidr" {
-  type = string
+  type        = string
+  description = "CIDR of LDAP VPC."
 }
 
 variable "vpc_region" {
-  type = string
+  type        = string
+  description = "Region to spawn 2 VPC into."
 }
 
 variable "subnet_az" {
-  type = string
+  type        = string
+  description = "Availability zone to spawn 2 VPC into."
 }
 
 variable "owner_public_key" {
-  type = string
+  type        = string
+  description = "Public key to add to EC2 instance."
 }
 
 variable "general_tags" {
-  type = map(string)
+  type        = map(string)
+  description = "Tags to apply for all resources inside this module."
 }

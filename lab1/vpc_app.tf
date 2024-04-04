@@ -1,4 +1,4 @@
-module "basic_network" {
+module "app_vpc" {
   source           = "../modules/basic-network"
   vpc_region       = var.vpc_region
   vpc_cidr         = var.vpc_cidr
