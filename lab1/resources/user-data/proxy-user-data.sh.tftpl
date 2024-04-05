@@ -140,3 +140,8 @@ authconfig --enablemkhomedir --update
 systemctl start sssd
 systemctl enable sssd
 systemctl restart sshd
+
+##########################################
+# Add neccessary group to sudoers
+##########################################
+echo "%server_admins  ALL : (ALL) ALL" >> /etc/sudoers

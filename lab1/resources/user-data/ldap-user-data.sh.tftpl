@@ -3,7 +3,7 @@
 set -e
 
 # Install required package
-yum install -y 389-ds-base nfs-utils wget php php-ldap webserver php-gd
+yum install -yq 389-ds-base nfs-utils wget php php-ldap webserver php-gd
 
 ##########################################
 # Setup LDAP
@@ -37,9 +37,6 @@ EOF
 # Add self signed cert into openldap config
 echo "TLS_CACERT /etc/dirsrv/slapd-localhost/ca.crt" >> /etc/openldap/ldap.conf
 
-# Create admin group
-dsidm localhost group create --cn server_admins
-
 # Enable memberof plugin
 dsconf localhost plugin memberof enable
 dsctl localhost restart
@@ -48,6 +45,16 @@ dsctl localhost restart
 dsconf localhost plugin memberof set --scope dc=example,dc=com
 dsconf localhost plugin memberof fixup dc=example,dc=com
 
+# Create admin group
+dsidm localhost posixgroup create --cn server_admins --gid 1108
+
+# Create some sample user:
+# - John can SSH to server (has sufficent role)
+# - Alice can't SSH to server
+dsidm localhost user create --uid john --cn John --displayName 'John User' --uidNumber 1001 --gidNumber 1001 --homeDirectory /home/john
+dsidm localhost user create --uid eve --cn Alice --displayName 'Alice User' --uidNumber 1002 --gidNumber 1002 --homeDirectory /home/alice
+
+dsidm localhost group add_member server_admins uid=john,ou=people,dc=example,dc=com
 
 ##########################################
 # Setup phpldapadmin (LDAP UI)
@@ -56,7 +63,7 @@ dsconf localhost plugin memberof fixup dc=example,dc=com
 # Since phpldapadmin inside EPEL, and this instance doesn't have enough memory to
 # add EPEL, we need to download .rpm package from source and install by hand.
 # See https://forums.rockylinux.org/t/epel-can-not-be-used-in-rocky9/9738
-wget https://dl.fedoraproject.org/pub/epel/9/Everything/aarch64/Packages/p/phpldapadmin-1.2.6.6-1.el9.noarch.rpm
+wget -q https://dl.fedoraproject.org/pub/epel/9/Everything/aarch64/Packages/p/phpldapadmin-1.2.6.6-1.el9.noarch.rpm
 rpm -U ./phpldapadmin-1.2.6.6-1.el9.noarch.rpm
 rm -f phpldapadmin-1.2.6.6-1.el9.noarch.rpm
 
