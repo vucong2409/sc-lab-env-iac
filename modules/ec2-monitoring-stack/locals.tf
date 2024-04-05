@@ -24,7 +24,6 @@ locals {
 }
 
 locals {
-  name_dashboard = format("%s_resource_dashboard", var.ec2_hostname)
   name_alert_cpu = format("%s-cpu-idle-less-than-20", var.ec2_hostname)
   name_alert_mem = format("%s-mem-greater-than-40", var.ec2_hostname)
 }

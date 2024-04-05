@@ -62,3 +62,7 @@ locals {
   sns_sub_protocol_http  = "http"
   sns_sub_protocol_https = "https"
 }
+
+locals {
+  dashboard_name_ec2_app = "ec2_monitor_app_instance"
+}

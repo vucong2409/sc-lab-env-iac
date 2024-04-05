@@ -8,6 +8,11 @@ variable "alert_topic_arn" {
   description = "ARN of the topic to send alerts to."
 }
 
+variable "ec2_dashboard_name" {
+  type        = string
+  description = "Name of the Cloudwatch dashboard for monitoring EC2."
+}
+
 variable "ec2_hostname" {
   type        = string
   description = "Hostname of the monitored EC2 instance."
