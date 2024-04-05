@@ -95,8 +95,6 @@ ldap_search_base = dc=example,dc=com
 ldap_uri = ldaps://${ ldap_server_dns_endpoint }
 
 ldap_tls_reqcert = never
-ldap_tls_cacertdir = /etc/openldap/certs
-ldap_tls_cacert = /etc/openldap/certs/ca.crt
 
 ldap_access_filter = (memberOf=cn=server_admins,ou=Groups,dc=example,dc=com)
 

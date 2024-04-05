@@ -56,3 +56,13 @@ locals {
   vpc_endpoint_type_gw_lb     = "GatewayLoadBalancer"
   vpc_endpoint_type_gw        = "Gateway"
 }
+
+locals {
+  sns_sub_protocol_email = "email"
+  sns_sub_protocol_http  = "http"
+  sns_sub_protocol_https = "https"
+}
+
+locals {
+  dashboard_name_ec2_app = "ec2_monitor_app_instance"
+}

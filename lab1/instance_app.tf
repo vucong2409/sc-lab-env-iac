@@ -10,7 +10,7 @@ resource "aws_instance" "app" {
       ldap_server_dns_endpoint = local.endpoint_ldap_server
     }
   )
-  iam_instance_profile = aws_iam_instance_profile.ec2_cw_instance_profile.name
+  iam_instance_profile = module.common_role.instance_profile_name_ec2_cw_agent
   source_dest_check    = true
   root_block_device {
     delete_on_termination = true
