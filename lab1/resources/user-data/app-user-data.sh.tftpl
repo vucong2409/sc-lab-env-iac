@@ -191,5 +191,6 @@ EOF
 
 ##########################################
 # Add neccessary group to sudoers
+# However when LDAP User want to use sudo, they still need to run newgrp first to let their user update group informations.
 ##########################################
-echo "%server_admins  ALL : (ALL) ALL" >> /etc/sudoers
+echo "%server_admins  ALL=(ALL) ALL" >> /etc/sudoers
