@@ -14,7 +14,7 @@ resource "aws_instance" "ldap" {
   key_name      = var.ec2_key_name
 
   user_data = templatefile(
-    "resources/user-data/ldap-user-data.sh.tftpl",
+    "${path.module}/resources/user-data/ldap-user-data.sh.tftpl",
     {
       ldap_root_password = random_password.directory_root_password.result
     }

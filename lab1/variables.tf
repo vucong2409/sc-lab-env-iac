@@ -23,6 +23,11 @@ variable "owner_public_key" {
   description = "Public key to add to EC2 instance."
 }
 
+variable "alert_receiver_email" {
+  type        = string
+  description = "Email to receive alert"
+}
+
 variable "general_tags" {
   type        = map(string)
   description = "Tags to apply for all resources inside this module."
