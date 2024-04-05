@@ -6,6 +6,6 @@ module "ldap_instance" {
   proxy_subnet_id           = module.ldap_vpc.public_subnet_id
   ec2_key_name              = aws_key_pair.main_ec2_keypair.key_name
   lb_internal               = true
-  ec2_instance_profile_name = aws_iam_instance_profile.ec2_cw_instance_profile.name
+  ec2_instance_profile_name = module.common_role.instance_profile_name_ec2_cw_agent
   general_tags              = var.general_tags
 }
