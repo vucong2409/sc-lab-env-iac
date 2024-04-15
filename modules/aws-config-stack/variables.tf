@@ -5,7 +5,7 @@ variable "resource_region" {
   EOT
 
   validation {
-    condition     = can(regex("[a-z][a-z]-[a-z]+-[1-9]", var.vpc_region))
+    condition     = can(regex("[a-z][a-z]-[a-z]+-[1-9]", var.resource_region))
     error_message = "Must be a valid AWS Region name."
   }
 }
@@ -17,14 +17,14 @@ variable "backup_s3_bucket_name" {
   This bucket will be created automatically.
   EOT
 
-  validation {
-    # Regex copied from https://stackoverflow.com/questions/50480924/regex-for-s3-bucket-name
-    condition     = can(regex("(?!(^xn--|.+-s3alias$))^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$", var.backup_s3_bucket_name))
-    error_message = <<EOT
-    Must be a valid S3 Bucket name.
-    See https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html.
-    EOT
-  }
+  # validation {
+  #   # Regex copied from https://stackoverflow.com/questions/50480924/regex-for-s3-bucket-name
+  #   condition     = can(regex("(?!(^xn--|.+-s3alias$))^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$", var.backup_s3_bucket_name))
+  #   error_message = <<EOT
+  #   Must be a valid S3 Bucket name.
+  #   See https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html.
+  #   EOT
+  # }
 }
 
 variable "general_tags" {
